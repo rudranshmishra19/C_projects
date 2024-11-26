@@ -1,0 +1,124 @@
+import time
+
+# Define the Item class
+class Item:
+    def __init__(self, item_id, name, price):
+        self.id = item_id
+        self.name = name
+        self.price = price
+
+# Function to display the list of items
+def display_list(items):
+    print("\n--- Updated List of Items ---")
+    for item in items:
+        print(f"{item.id}. {item.name} - ${item.price:.2f}")
+
+# Function to animate dots
+def animate_dots(message, duration):
+    print(message, end="", flush=True)
+    for _ in range(duration):
+        print(".", end="", flush=True)
+        time.sleep(0.5)
+    print()
+
+# Function to handle payment options
+def payment_options(selected_item):
+    methods = ["Cash", "Voucher"]
+    print("\n--- Payment Options ---")
+    for i, method in enumerate(methods, start=1):
+        print(f"{i}. {method}")
+
+    while True:
+        try:
+            method = int(input("Choose Payment Method (1-2): "))
+            if method in [1, 2]:
+                break
+            print("Invalid choice. Please choose 1 or 2.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+    if method == 1:
+        # Handle cash payment
+        while True:
+            try:
+                money = float(input(f"Insert money ($ {selected_item.price:.2f}): "))
+                if money >= selected_item.price:
+                    print(f"Payment Successful. Change: $ {money - selected_item.price:.2f}")
+                    return True
+                print("Insufficient funds. Please try again.")
+            except ValueError:
+                print("Invalid input. Please enter a valid amount.")
+    elif method == 2:
+        # Handle voucher
+        voucher = input("Enter Voucher Code: ").strip()
+        valid_vouchers = {"RX885k", "JQ6973", "MX5533"}
+        if voucher in valid_vouchers:
+            print("Voucher Redeemed Successfully!")
+            return True
+        print("Invalid Voucher Code.")
+    
+    return False
+
+# Function to purchase an item
+def purchase_item(items):
+    print("\n--- Purchase Item ---")
+    while True:
+        try:
+            item_id = int(input("Enter Item ID: "))
+            break
+        except ValueError:
+            print("Invalid input. Please enter a numeric ID.")
+
+    for item in items:
+        if item.id == item_id:
+            animate_dots("Processing", 4)
+            if payment_options(item):
+                animate_dots("Dispensing Item", 4)
+                print(f"Item Dispensed: {item.name}")
+            else:
+                print("Payment Failed.")
+            return
+
+    print("Invalid Item ID.")
+
+# Function to display the loyalty program
+def loyalty_program():
+    print("\n--- Loyalty Program ---")
+    print("Available Vouchers: RX885k, JQ6973, MX5533")
+
+# Main function
+def main():
+    items = [
+        Item(1, "Lays", 5.0),
+        Item(2, "Cookie", 10.0),
+        Item(3, "Cola", 10.0),
+        Item(4, "Cold Coffee", 15.0),
+        Item(5, "Buttermilk", 15.0),
+        Item(6, "Red Bull", 30.0)
+    ]
+
+    while True:
+        print("\n--- Main Menu ---")
+        print("1. Display Items")
+        print("2. Purchase Item")
+        print("3. Loyalty Program")
+        print("4. Exit")
+
+        try:
+            choice = int(input("Choose an option (1-4): "))
+            if choice == 1:
+                display_list(items)
+            elif choice == 2:
+                purchase_item(items)
+            elif choice == 3:
+                loyalty_program()
+            elif choice == 4:
+                print("Thank you for using the vending machine. Goodbye!")
+                break
+            else:
+                print("Invalid choice. Please choose between 1 and 4.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+if __name__ == "__main__":
+    main()
